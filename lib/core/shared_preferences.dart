@@ -3,83 +3,63 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefs {
   static SharedPreferences? _prefs;
 
-  static Future init() async {
+  static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  // ------------------ SETTERS -------------------------
-  static Future<bool> setString(String key, String value) =>
-      _prefs!.setString(key, value);
+  // ================== General Methods ==================
+  static String? getString(String key) => _prefs?.getString(key);
+  static bool? getBool(String key) => _prefs?.getBool(key);
+  static Future<bool> setString(String key, String value) async =>
+      _prefs?.setString(key, value) ?? false;
+  static Future<bool> setBool(String key, bool value) async =>
+      _prefs?.setBool(key, value) ?? false;
+  static Future<bool> remove(String key) async => _prefs?.remove(key) ?? false;
+  static Future<bool> clear() async => _prefs?.clear() ?? false;
 
-  static Future<bool> setInt(String key, int value) =>
-      _prefs!.setInt(key, value);
+  // ================== Keys ==================
+  static const String _keyUserId = 'user_id';
+  static const String _keyIsLoggedIn = 'is_logged_in';
+  static const String _keyUserRole = 'user_role';
+  static const String _keyEmail = 'user_email';
 
-  static Future<bool> setDouble(String key, double value) =>
-      _prefs!.setDouble(key, value);
-
-  static Future<bool> setBool(String key, bool value) =>
-      _prefs!.setBool(key, value);
-
-  static Future<bool> setStringList(String key, List<String> value) =>
-      _prefs!.setStringList(key, value);
-
-  // ------------------ GETTERS ------------------
-  static String? getString(String key) => _prefs!.getString(key);
-
-  static int? getInt(String key) => _prefs!.getInt(key);
-
-  static double? getDouble(String key) => _prefs!.getDouble(key);
-
-  static bool? getBool(String key) => _prefs!.getBool(key);
-
-  static List<String>? getStringList(String key) => _prefs!.getStringList(key);
-
-  // ------------------ REMOVE & CLEAR ------------------
-  static Future<bool> remove(String key) => _prefs!.remove(key);
-
-  static Future<bool> clear() => _prefs!.clear();
-
-  ////
-  static const _keyToken = 'user_token';
-  static const _keyRole = 'user_role';
-  static const _keyUserId = 'user_id';
-
-  final SharedPreferences prefs;
-
-  SharedPrefs({required this.prefs});
-
-  // Save token
-  Future<void> saveToken(String token) async {
-    await prefs.setString(_keyToken, token);
+  // ================== Save Login Data ==================
+  static Future<void> saveLoginData({
+    required String userId,
+    required String role,
+    String? email,
+  }) async {
+    await Future.wait([
+      setString(_keyUserId, userId),
+      setString(_keyUserRole, role),
+      if (email != null) setString(_keyEmail, email),
+      setBool(_keyIsLoggedIn, true),
+    ]);
   }
 
-  // Get token
-  String? getToken() {
-    return prefs.getString(_keyToken);
+  // ================== Getters ==================
+  static bool isLoggedIn() {
+    return _prefs?.getBool(_keyIsLoggedIn) ?? false;
   }
 
-  Future<void> saveUserId(String id) async {
-    await prefs.setString(_keyUserId, id);
+  static String? getUserId() => _prefs?.getString(_keyUserId);
+  static String? getUserRole() => _prefs?.getString(_keyUserRole);
+  static String? getEmail() => _prefs?.getString(_keyEmail);
+
+  static bool isAdmin() {
+    return getUserRole() == 'admin';
   }
 
-  // Get user ID
-  String? getUserId() {
-    return prefs.getString(_keyUserId);
+  static Future<void> logout() async {
+    await clear();
   }
 
-  // Save role
-  Future<void> saveRole(String role) async {
-    await prefs.setString(_keyRole, role);
-  }
-
-  // Get role
-  String? getRole() {
-    return prefs.getString(_keyRole);
-  }
-
-  // Clear all
-  Future<void> clearTokens() async {
-    await prefs.remove(_keyToken);
-    await prefs.remove(_keyRole);
+  static Future<void> clearLoginData() async {
+    await Future.wait([
+      remove(_keyUserId),
+      remove(_keyUserRole),
+      remove(_keyEmail),
+      remove(_keyIsLoggedIn),
+    ]);
   }
 }

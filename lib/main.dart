@@ -1,10 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:placefinder/core/shared_preferences.dart';
 import 'package:placefinder/routes/app_routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+
+  await SharedPrefs.init();
+
   runApp(const MyApp());
 }
 

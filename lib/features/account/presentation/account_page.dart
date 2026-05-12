@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:placefinder/core/shared_preferences.dart';
 import 'package:placefinder/resources/app_color.dart';
+import 'package:placefinder/routes/routes.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -66,7 +69,7 @@ class _AccountPageState extends State<AccountPage> {
 
   void openEditDialog() {
     nameController.text = userName;
-    setState(() => _isUpdating = false); // ← Important fix
+    setState(() => _isUpdating = false);
 
     showDialog(
       context: context,
@@ -219,9 +222,34 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _logout() async {
-    await _auth.signOut();
-    if (mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    bool confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.strongRed,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Logout", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _auth.signOut();
+      await SharedPrefs.logout();
+
+      if (mounted) {
+        context.goNamed(Routes.login);
+      }
     }
   }
 

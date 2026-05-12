@@ -5,7 +5,6 @@ class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Updated Sign Up
   Future<UserCredential> signUp({
     required String name,
     required String email,
@@ -13,14 +12,11 @@ class FirebaseAuthService {
     required String password,
   }) async {
     try {
-      // Create user in Firebase Auth
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Update display name in Auth
       await userCredential.user?.updateDisplayName(name);
 
-      // Save user data in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'fullName': name,
         'email': email,

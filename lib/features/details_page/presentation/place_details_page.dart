@@ -75,8 +75,9 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double lat = (widget.place["lat"] ?? 0).toDouble();
-    final double lng = (widget.place["lng"] ?? 0).toDouble();
+    // Fixed field names
+    final double lat = (widget.place["latitude"] ?? 0).toDouble();
+    final double lng = (widget.place["longitude"] ?? 0).toDouble();
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -100,7 +101,7 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
             Stack(
               children: [
                 Image.network(
-                  widget.place["image"] ?? "",
+                  widget.place["imageUrl"] ?? "",
                   height: 220,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -205,7 +206,6 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
 
                                     MarkerLayer(
                                       markers: [
-                                        // PLACE MARKER (RED)
                                         Marker(
                                           point: LatLng(lat, lng),
                                           width: 50,
@@ -217,7 +217,6 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                                           ),
                                         ),
 
-                                        // USER MARKER (BLUE)
                                         if (userPosition != null)
                                           Marker(
                                             point: LatLng(
@@ -240,7 +239,6 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
                       ),
                     ),
 
-                    // FLOATING BUTTON (MY LOCATION)
                     Positioned(
                       bottom: 25,
                       right: 30,

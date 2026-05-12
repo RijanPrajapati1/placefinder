@@ -4,6 +4,7 @@ import 'package:placefinder/auth/login/presentation/login_page.dart';
 import 'package:placefinder/auth/signup/presentation/signup_page.dart';
 import 'package:placefinder/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:placefinder/features/account/presentation/account_page.dart';
+import 'package:placefinder/features/admin/admin_homepage/presentation/admin_homepage.dart';
 import 'package:placefinder/features/details_page/presentation/place_details_page.dart';
 import 'package:placefinder/features/home/presentation/home_page.dart';
 import 'package:placefinder/features/search/presentation/search_page.dart';
@@ -76,6 +77,11 @@ class AppRoutes {
         path: '/account',
         name: Routes.account,
         builder: (context, state) => const AccountPage(),
+      ),
+      GoRoute(
+        path: '/adminHome',
+        name: Routes.adminHome,
+        builder: (context, state) => const AdminHomePage(),
       ),
       GoRoute(
         path: '/placeDetailsPage',

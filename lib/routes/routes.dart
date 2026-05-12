@@ -5,6 +5,8 @@ class Routes {
 
   static const String account = '/account';
 
+  static const String adminHome = '/adminHome';
+
   static const String login = '/login';
   static const String signup = '/signup';
 

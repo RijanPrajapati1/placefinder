@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:placefinder/core/shared_preferences.dart';
 import 'package:placefinder/resources/app_assets.dart';
 import 'package:placefinder/resources/app_color.dart';
 import 'package:placefinder/routes/routes.dart';
@@ -15,16 +16,21 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _startSplash();
+    _navigateToNextScreen();
   }
 
-  void _startSplash() async {
-    await Future.delayed(const Duration(seconds: 3));
+  Future<void> _navigateToNextScreen() async {
+    await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
-    // Safe navigation using GoRouter
-    context.go(Routes.login);
+    final isLoggedIn = SharedPrefs.isLoggedIn();
+
+    if (isLoggedIn) {
+      context.goNamed(Routes.home);
+    } else {
+      context.goNamed(Routes.login);
+    }
   }
 
   @override
@@ -37,19 +43,16 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           children: [
             const Spacer(),
-
             Center(
               child: Image.asset(
                 AppAssets.placeFinder,
-                width: deviceWidth * 6,
+                width: deviceWidth * 0.9,
                 fit: BoxFit.contain,
               ),
             ),
-
             const Spacer(),
-
             const Padding(
-              padding: EdgeInsets.only(bottom: 30),
+              padding: EdgeInsets.only(bottom: 40),
               child: CircularProgressIndicator(color: AppColor.primary),
             ),
           ],
