@@ -21,23 +21,13 @@ class SignupSubmitted extends SignupEvent {
 class SignupState {
   final bool isLoading;
   final String? errorMessage;
-  final bool isSuccess;
 
-  SignupState({
-    this.isLoading = false,
-    this.errorMessage,
-    this.isSuccess = false,
-  });
+  SignupState({this.isLoading = false, this.errorMessage});
 
-  SignupState copyWith({
-    bool? isLoading,
-    String? errorMessage,
-    bool? isSuccess,
-  }) {
+  SignupState copyWith({bool? isLoading, String? errorMessage}) {
     return SignupState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
-      isSuccess: isSuccess ?? this.isSuccess,
     );
   }
 }
@@ -46,14 +36,14 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final FirebaseAuthService _authService;
 
   SignupBloc(this._authService) : super(SignupState()) {
-    on<SignupSubmitted>(_onSignupSubmitted);
+    on<SignupSubmitted>(_onSubmitted);
   }
 
-  Future<void> _onSignupSubmitted(
+  Future<void> _onSubmitted(
     SignupSubmitted event,
     Emitter<SignupState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(state.copyWith(isLoading: true));
 
     try {
       await _authService.signUp(
@@ -62,13 +52,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         phone: event.phone,
         password: event.password,
       );
-      emit(state.copyWith(isLoading: false, isSuccess: true));
+      emit(state.copyWith(isLoading: false));
     } on FirebaseAuthException catch (e) {
-      String message = e.message ?? "Signup failed";
+      String msg = e.message ?? "Signup failed";
       if (e.code == 'email-already-in-use') {
-        message = "The email address is already in use";
+        msg = "The email address is already in use by another account";
       }
-      emit(state.copyWith(isLoading: false, errorMessage: message));
+      emit(state.copyWith(isLoading: false, errorMessage: msg));
     } catch (e) {
       emit(
         state.copyWith(
