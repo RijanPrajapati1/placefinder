@@ -1,17 +1,19 @@
 # placefinder
 
-A new Flutter project.
+1. Clone the Project
+Clone via github link.
 
-## Getting Started
+2. Install Dependencies
+flutter pub get
 
-This project is a starting point for a Flutter application.
+3. Firebase Setup (Required)
+   Create a Firebase Project at Firebase Console
+   Enable Authentication (Email/Password)
+   Enable Firestore Database
+   Download configuration files:
+      google-services.json → paste in android/app/ folder
+      GoogleService-Info.plist → paste in ios/Runner/ folder
 
-A few resources to get you started if this is your first Flutter project:
+4. Run the App
+flutter run
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
